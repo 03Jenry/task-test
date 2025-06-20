@@ -15,3 +15,8 @@
 172.18.0.1 - - [20/Jun/2025:20:40:37 +0000] "PUT /api/v1/tasks/1 HTTP/1.1" 500 15064 "-" "PostmanRuntime/7.44.0" "-"
 172.18.0.1 - - [20/Jun/2025:20:40:46 +0000] "PUT /api/v1/tasks/1 HTTP/1.1" 200 204 "-" "PostmanRuntime/7.44.0" "-"
 172.18.0.1 - - [20/Jun/2025:20:41:16 +0000] "PUT /api/v1/tasks/1 HTTP/1.1" 200 219 "-" "PostmanRuntime/7.44.0" "-"
+172.18.0.1 - - [20/Jun/2025:21:17:08 +0000] "GET /api/v1/tasks HTTP/1.1" 200 3316 "-" "PostmanRuntime/7.44.0" "-"
+172.18.0.1 - - [20/Jun/2025:21:17:18 +0000] "GET /api/v1/tasks/1 HTTP/1.1" 200 219 "-" "PostmanRuntime/7.44.0" "-"
+172.18.0.1 - - [20/Jun/2025:21:17:32 +0000] "POST /api/v1/tasks HTTP/1.1" 201 188 "-" "PostmanRuntime/7.44.0" "-"
+172.18.0.1 - - [20/Jun/2025:21:18:02 +0000] "PUT /api/v1/tasks/12 HTTP/1.1" 200 220 "-" "PostmanRuntime/7.44.0" "-"
+172.18.0.1 - - [20/Jun/2025:21:18:09 +0000] "DELETE /api/v1/tasks/1 HTTP/1.1" 204 0 "-" "PostmanRuntime/7.44.0" "-"

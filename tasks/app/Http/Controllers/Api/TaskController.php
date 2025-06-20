@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Models\Task;
 use Illuminate\Http\Request;
+use App\Services\TaskService;
 use Illuminate\Http\Response;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\TaskResource;
@@ -12,50 +13,42 @@ use App\Http\Requests\Task\UpdateRequest;
 
 class TaskController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
+    protected $taskService;
+
+    public function __construct(TaskService $taskService)
+    {
+        $this->taskService = $taskService;
+    }
+
     public function index()
     {
-        $tasks = Task::all();
+        $tasks = $this->taskService->getAllTasks();
         return TaskResource::collection($tasks);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(StoreRequest $request)
     {
-        $task = Task::create($request->all());
+        $task = $this->taskService->createTask($request->all());
         return (new TaskResource($task))
             ->response()
             ->setStatusCode(Response::HTTP_CREATED);
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(Task $task)
+    public function show(int $id)
     {
+        $task = $this->taskService->getTask($id);
         return new TaskResource($task);
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(UpdateRequest $request, Task $task)
+    public function update(Request $request, int $id)
     {
-        $task->update($request->all());
-
+        $task = $this->taskService->updateTask($id, $request->all());
         return new TaskResource($task);
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Task $task)
+    public function destroy(int $id)
     {
-        $task->delete();
+        $this->taskService->deleteTask($id);
         return response()->json(null, Response::HTTP_NO_CONTENT);
     }
 }
