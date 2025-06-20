@@ -1,0 +1,70 @@
+networks:
+  appnetworktest:
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: app-test
+    working_dir: /var/www
+    restart: always
+    volumes:
+      - ./tasks:/var/www
+      - ./docker/php/php.ini:/usr/local/etc/php/php.ini
+    ports:
+      - "9000:9000"
+    environment:
+      - APP_ENV=local
+      - APP_DEBUG=true
+    depends_on:
+      - db
+    networks:
+      - appnetworktest
+    command: >
+      sh -c "chown -R www-data:www-data /var/www/storage /var/www/bootstrap/cache &&
+             chmod -R 775 /var/www/storage /var/www/bootstrap/cache &&
+             composer install &&
+             [ ! -f /var/www/.env.key ] && php artisan key:generate &&
+             php-fpm"
+
+  web:
+    image: nginx:stable-alpine
+    container_name: nginx-test
+    restart: always
+    ports:
+      - "8000:80"
+    volumes:
+      - ./test:/var/www
+      - ./docker/nginx/default.conf:/etc/nginx/conf.d/default.conf
+      - ./docker/nginx/logs:/var/log/nginx
+    depends_on:
+      - app
+    networks:
+      - appnetworktest
+
+  db:
+    image: mysql:8.0
+    container_name: mysql-test
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: 'root'
+      MYSQL_DATABASE: 'tasks'
+      MYSQL_USER: 'jenry'
+      MYSQL_PASSWORD: '12345678'
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data_test:/var/lib/mysql
+      - ./docker/mysql/my.cnf:/etc/mysql/my.cnf
+    networks:
+      - appnetworktest
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-proot"]
+      interval: 10s
+      timeout: 10s
+      retries: 5
+      start_period: 30s
+      
+volumes:
+  mysql_data_test:
